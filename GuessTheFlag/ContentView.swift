@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var correctScore = 0
     @State private var wrongScore = 0
+    @State private var questionCount = 0
+    @State private var gameOver = false
     
     var body: some View {
         ZStack {
@@ -56,13 +58,30 @@ struct ContentView: View {
             }
         }
         .alert(scoreTitle, isPresented: $showingScore) {
-            Button("Continue", action: askQuestion)
+            Button("Continue") {
+                if questionCount < 8 {
+                    askQuestion()
+                } else {
+                    gameOver = true
+                }
+                
+            }
         } message: {
             Text("Your score is \(correctScore)")
+        }
+        .alert("Game over!", isPresented: $gameOver) {
+            Button("Start new game") {
+                resetCounts()
+                askQuestion()
+            }
+        } message: {
+            Text("\(correctScore) correct answers and \(wrongScore) wrong answers")
         }
     }
     
     func flagTapped(_ number: Int) {
+        questionCount += 1
+
         if number == correctAnswer {
             scoreTitle = "Correct"
             correctScore += 1
@@ -77,6 +96,13 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func resetCounts() {
+        correctScore = 0
+        wrongScore = 0
+        questionCount = 0
+     askQuestion()
     }
 }
 
