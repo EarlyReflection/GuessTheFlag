@@ -7,12 +7,18 @@
 
 import SwiftUI
 
-struct FlagImage: View {
-    var flag: String
-    var body: some View {
-        Image(flag)
-        .cornerRadius(10)
-        .shadow(radius: 50)
+// custom modifier
+struct LargeBlue: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle.weight(.semibold))
+            .foregroundColor(.blue)
+    }
+}
+// extension for modifier
+extension View {
+    func largeBlue() -> some View {
+        modifier(LargeBlue())
     }
 }
 
@@ -46,7 +52,7 @@ struct ContentView: View {
                         .font(.subheadline.weight(.bold))
                     
                     Text(countries[correctAnswer])
-                        .font(.largeTitle.weight(.semibold))
+                        .largeBlue()
                 }
                 .foregroundColor(.white)
                 .padding(30)
@@ -55,7 +61,7 @@ struct ContentView: View {
                     Button {
                     flagTapped(number)
                     } label: {
-                        FlagImage(flag: countries[number])                        
+                        FlagImage(name: countries[number])
                     }
                 }
                 Spacer()
